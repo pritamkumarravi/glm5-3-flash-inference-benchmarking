@@ -1,0 +1,520 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "pd-mooncake-prefill",
+        "namespace": "glm53-research"
+      },
+      "spec": {
+        "replicas": 1,
+        "strategy": {
+          "type": "Recreate"
+        },
+        "selector": {
+          "matchLabels": {
+            "app": "pd-mooncake-prefill"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "pd-mooncake-prefill",
+              "role": "prefill",
+              "transport": "mooncake"
+            },
+            "annotations": {
+              "research.model-revision": "46a050bec13002ad29ee795c16e61cf4fa3c4a9c",
+              "research.validation": "NOT validated: requires bootstrap, KV/KDA transfer and real-weight correctness gates"
+            }
+          },
+          "spec": {
+            "runtimeClassName": "nvidia",
+            "nodeSelector": {
+              "kubernetes.io/hostname": "glm53-h100-0"
+            },
+            "terminationGracePeriodSeconds": 90,
+            "containers": [
+              {
+                "name": "worker",
+                "image": "docker.io/glm53/sglang-dynamo:0.5.20-1.6.0",
+                "imagePullPolicy": "Never",
+                "command": [
+                  "bash",
+                  "-lc",
+                  "set -euo pipefail; test -f /cache/download-manifest.json; python3 -m dynamo.sglang --model-path /cache/checkpoint --served-model-name zai-org/GLM-5.3-Flash --tp-size 8 --ep-size 1 --quantization fp8 --kv-cache-dtype bfloat16 --dsa-prefill-backend tilelang --dsa-decode-backend tilelang --moe-runner-backend deep_gemm --dyn-reasoning-parser glm45 --dyn-tool-call-parser glm47 --context-length 1048576 --mem-fraction-static 0.7 --max-running-requests 32 --chunked-prefill-size 8192 --max-prefill-tokens 8192 --mamba-full-memory-ratio 0.9 --enable-metrics --watchdog-timeout 1200 --host 0.0.0.0 --port 30000 --engine-route flush_cache --engine-route server_info=get_server_info --kv-events-config '{\"publisher\":\"zmq\",\"endpoint\":\"tcp://*:5557\",\"topic\":\"kv-events\",\"replay_buffer_size\":10000}' --disaggregation-mode prefill --disaggregation-transfer-backend mooncake --disaggregation-bootstrap-port 8998 2>&1 | tee -a /logs/pd-mooncake-prefill-${HOSTNAME}.log"
+                ],
+                "env": [
+                  {
+                    "name": "HF_HOME",
+                    "value": "/cache/hf"
+                  },
+                  {
+                    "name": "HF_HUB_OFFLINE",
+                    "value": "1"
+                  },
+                  {
+                    "name": "TRANSFORMERS_OFFLINE",
+                    "value": "1"
+                  },
+                  {
+                    "name": "OMP_NUM_THREADS",
+                    "value": "8"
+                  },
+                  {
+                    "name": "NCCL_DEBUG",
+                    "value": "INFO"
+                  },
+                  {
+                    "name": "DYN_NAMESPACE",
+                    "value": "glm53-pd"
+                  },
+                  {
+                    "name": "ETCD_ENDPOINTS",
+                    "value": "http://etcd:2379"
+                  },
+                  {
+                    "name": "DYN_DISCOVERY_BACKEND",
+                    "value": "etcd"
+                  },
+                  {
+                    "name": "DYN_EVENT_PLANE",
+                    "value": "zmq"
+                  },
+                  {
+                    "name": "DYN_REQUEST_PLANE",
+                    "value": "tcp"
+                  },
+                  {
+                    "name": "DYN_RESPONSE_PLANE",
+                    "value": "tcp"
+                  },
+                  {
+                    "name": "DYN_SYSTEM_PORT",
+                    "value": "8081"
+                  },
+                  {
+                    "name": "SGLANG_HOST_IP",
+                    "valueFrom": {
+                      "fieldRef": {
+                        "fieldPath": "status.podIP"
+                      }
+                    }
+                  },
+                  {
+                    "name": "UCX_LOG_LEVEL",
+                    "value": "info"
+                  },
+                  {
+                    "name": "NIXL_LOG_LEVEL",
+                    "value": "info"
+                  }
+                ],
+                "ports": [
+                  {
+                    "containerPort": 30000,
+                    "name": "http"
+                  },
+                  {
+                    "containerPort": 8081,
+                    "name": "metrics"
+                  },
+                  {
+                    "name": "bootstrap",
+                    "containerPort": 8998
+                  }
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": 32,
+                    "memory": "800Gi",
+                    "nvidia.com/gpu": 8
+                  },
+                  "limits": {
+                    "memory": "1100Gi",
+                    "nvidia.com/gpu": 8
+                  }
+                },
+                "securityContext": {
+                  "capabilities": {
+                    "add": [
+                      "IPC_LOCK",
+                      "SYS_RESOURCE"
+                    ]
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "cache",
+                    "mountPath": "/cache"
+                  },
+                  {
+                    "name": "cache",
+                    "mountPath": "/root/.cache",
+                    "subPath": "kernel-cache/root-cache"
+                  },
+                  {
+                    "name": "cache",
+                    "mountPath": "/root/.triton",
+                    "subPath": "kernel-cache/triton"
+                  },
+                  {
+                    "name": "shm",
+                    "mountPath": "/dev/shm"
+                  },
+                  {
+                    "name": "logs",
+                    "mountPath": "/logs"
+                  },
+                  {
+                    "name": "verbs",
+                    "mountPath": "/dev/infiniband"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "cache",
+                "persistentVolumeClaim": {
+                  "claimName": "model-0"
+                }
+              },
+              {
+                "name": "shm",
+                "emptyDir": {
+                  "medium": "Memory",
+                  "sizeLimit": "128Gi"
+                }
+              },
+              {
+                "name": "logs",
+                "hostPath": {
+                  "path": "/root/glm53-research/logs/prefill",
+                  "type": "DirectoryOrCreate"
+                }
+              },
+              {
+                "name": "verbs",
+                "hostPath": {
+                  "path": "/dev/infiniband",
+                  "type": "Directory"
+                }
+              }
+            ],
+            "initContainers": [
+              {
+                "name": "prepare-cache",
+                "image": "docker.io/glm53/sglang-dynamo:0.5.20-1.6.0",
+                "imagePullPolicy": "Never",
+                "command": [
+                  "bash",
+                  "-lc",
+                  "mkdir -p /cache/kernel-cache/root-cache /cache/kernel-cache/triton"
+                ],
+                "env": [
+                  {
+                    "name": "NVIDIA_VISIBLE_DEVICES",
+                    "value": "void"
+                  }
+                ],
+                "volumeMounts": [
+                  {
+                    "name": "cache",
+                    "mountPath": "/cache"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "pd-mooncake-prefill",
+        "namespace": "glm53-research"
+      },
+      "spec": {
+        "publishNotReadyAddresses": true,
+        "selector": {
+          "app": "pd-mooncake-prefill"
+        },
+        "ports": [
+          {
+            "name": "metrics",
+            "port": 8081,
+            "targetPort": "metrics"
+          },
+          {
+            "name": "bootstrap",
+            "port": 8998,
+            "targetPort": "bootstrap"
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "pd-mooncake-decode",
+        "namespace": "glm53-research"
+      },
+      "spec": {
+        "replicas": 1,
+        "strategy": {
+          "type": "Recreate"
+        },
+        "selector": {
+          "matchLabels": {
+            "app": "pd-mooncake-decode"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "pd-mooncake-decode",
+              "role": "decode",
+              "transport": "mooncake"
+            },
+            "annotations": {
+              "research.model-revision": "46a050bec13002ad29ee795c16e61cf4fa3c4a9c",
+              "research.validation": "NOT validated: requires bootstrap, KV/KDA transfer and real-weight correctness gates"
+            }
+          },
+          "spec": {
+            "runtimeClassName": "nvidia",
+            "nodeSelector": {
+              "kubernetes.io/hostname": "glm53-h100-1"
+            },
+            "terminationGracePeriodSeconds": 90,
+            "containers": [
+              {
+                "name": "worker",
+                "image": "docker.io/glm53/sglang-dynamo:0.5.20-1.6.0",
+                "imagePullPolicy": "Never",
+                "command": [
+                  "bash",
+                  "-lc",
+                  "set -euo pipefail; test -f /cache/download-manifest.json; python3 -m dynamo.sglang --model-path /cache/checkpoint --served-model-name zai-org/GLM-5.3-Flash --tp-size 8 --ep-size 1 --quantization fp8 --kv-cache-dtype bfloat16 --dsa-prefill-backend tilelang --dsa-decode-backend tilelang --moe-runner-backend deep_gemm --dyn-reasoning-parser glm45 --dyn-tool-call-parser glm47 --context-length 1048576 --mem-fraction-static 0.7 --max-running-requests 32 --chunked-prefill-size 8192 --max-prefill-tokens 8192 --mamba-full-memory-ratio 0.9 --enable-metrics --watchdog-timeout 1200 --host 0.0.0.0 --port 30000 --engine-route flush_cache --engine-route server_info=get_server_info --kv-events-config '{\"publisher\":\"zmq\",\"endpoint\":\"tcp://*:5557\",\"topic\":\"kv-events\",\"replay_buffer_size\":10000}' --disaggregation-mode decode --disaggregation-transfer-backend mooncake --disaggregation-bootstrap-port 8998 2>&1 | tee -a /logs/pd-mooncake-decode-${HOSTNAME}.log"
+                ],
+                "env": [
+                  {
+                    "name": "HF_HOME",
+                    "value": "/cache/hf"
+                  },
+                  {
+                    "name": "HF_HUB_OFFLINE",
+                    "value": "1"
+                  },
+                  {
+                    "name": "TRANSFORMERS_OFFLINE",
+                    "value": "1"
+                  },
+                  {
+                    "name": "OMP_NUM_THREADS",
+                    "value": "8"
+                  },
+                  {
+                    "name": "NCCL_DEBUG",
+                    "value": "INFO"
+                  },
+                  {
+                    "name": "DYN_NAMESPACE",
+                    "value": "glm53-pd"
+                  },
+                  {
+                    "name": "ETCD_ENDPOINTS",
+                    "value": "http://etcd:2379"
+                  },
+                  {
+                    "name": "DYN_DISCOVERY_BACKEND",
+                    "value": "etcd"
+                  },
+                  {
+                    "name": "DYN_EVENT_PLANE",
+                    "value": "zmq"
+                  },
+                  {
+                    "name": "DYN_REQUEST_PLANE",
+                    "value": "tcp"
+                  },
+                  {
+                    "name": "DYN_RESPONSE_PLANE",
+                    "value": "tcp"
+                  },
+                  {
+                    "name": "DYN_SYSTEM_PORT",
+                    "value": "8081"
+                  },
+                  {
+                    "name": "SGLANG_HOST_IP",
+                    "valueFrom": {
+                      "fieldRef": {
+                        "fieldPath": "status.podIP"
+                      }
+                    }
+                  },
+                  {
+                    "name": "UCX_LOG_LEVEL",
+                    "value": "info"
+                  },
+                  {
+                    "name": "NIXL_LOG_LEVEL",
+                    "value": "info"
+                  }
+                ],
+                "ports": [
+                  {
+                    "containerPort": 30000,
+                    "name": "http"
+                  },
+                  {
+                    "containerPort": 8081,
+                    "name": "metrics"
+                  },
+                  {
+                    "name": "bootstrap",
+                    "containerPort": 8998
+                  }
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": 32,
+                    "memory": "800Gi",
+                    "nvidia.com/gpu": 8
+                  },
+                  "limits": {
+                    "memory": "1100Gi",
+                    "nvidia.com/gpu": 8
+                  }
+                },
+                "securityContext": {
+                  "capabilities": {
+                    "add": [
+                      "IPC_LOCK",
+                      "SYS_RESOURCE"
+                    ]
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "cache",
+                    "mountPath": "/cache"
+                  },
+                  {
+                    "name": "cache",
+                    "mountPath": "/root/.cache",
+                    "subPath": "kernel-cache/root-cache"
+                  },
+                  {
+                    "name": "cache",
+                    "mountPath": "/root/.triton",
+                    "subPath": "kernel-cache/triton"
+                  },
+                  {
+                    "name": "shm",
+                    "mountPath": "/dev/shm"
+                  },
+                  {
+                    "name": "logs",
+                    "mountPath": "/logs"
+                  },
+                  {
+                    "name": "verbs",
+                    "mountPath": "/dev/infiniband"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "cache",
+                "persistentVolumeClaim": {
+                  "claimName": "model-1"
+                }
+              },
+              {
+                "name": "shm",
+                "emptyDir": {
+                  "medium": "Memory",
+                  "sizeLimit": "128Gi"
+                }
+              },
+              {
+                "name": "logs",
+                "hostPath": {
+                  "path": "/root/glm53-research/logs/decode",
+                  "type": "DirectoryOrCreate"
+                }
+              },
+              {
+                "name": "verbs",
+                "hostPath": {
+                  "path": "/dev/infiniband",
+                  "type": "Directory"
+                }
+              }
+            ],
+            "initContainers": [
+              {
+                "name": "prepare-cache",
+                "image": "docker.io/glm53/sglang-dynamo:0.5.20-1.6.0",
+                "imagePullPolicy": "Never",
+                "command": [
+                  "bash",
+                  "-lc",
+                  "mkdir -p /cache/kernel-cache/root-cache /cache/kernel-cache/triton"
+                ],
+                "env": [
+                  {
+                    "name": "NVIDIA_VISIBLE_DEVICES",
+                    "value": "void"
+                  }
+                ],
+                "volumeMounts": [
+                  {
+                    "name": "cache",
+                    "mountPath": "/cache"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "pd-mooncake-decode",
+        "namespace": "glm53-research"
+      },
+      "spec": {
+        "publishNotReadyAddresses": true,
+        "selector": {
+          "app": "pd-mooncake-decode"
+        },
+        "ports": [
+          {
+            "name": "metrics",
+            "port": 8081,
+            "targetPort": "metrics"
+          },
+          {
+            "name": "bootstrap",
+            "port": 8998,
+            "targetPort": "bootstrap"
+          }
+        ]
+      }
+    }
+  ]
+}

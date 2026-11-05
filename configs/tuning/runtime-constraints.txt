@@ -1,0 +1,5 @@
+sglang==0.5.20
+torch==2.13.0+cu130
+transformers==5.12.1
+tilelang==0.1.12
+sgl-deep-gemm==0.2.0

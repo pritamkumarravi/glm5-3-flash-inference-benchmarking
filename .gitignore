@@ -1,0 +1,25 @@
+*.key
+*.pem
+.env*
+*kubeconfig*
+__pycache__/
+.secrets/
+*.token
+logs/
+benchmarks/raw/
+environment/sources/
+environment/operations.jsonl
+
+benchmarks/exported/
+
+# Local evidence archives and extracted snapshots
+.DS_Store
+*.tar.gz
+*.tar.gz.sha256
+/results/*.bundle
+/glm53-research/
+
+# Provider-specific rental connection details remain local
+/environment/lium-rentals-latest.json
+/environment/node0-provider-status-final.json
+/environment/node1-provider-status-final.json

@@ -1,0 +1,118 @@
+{
+  "apiVersion": "batch/v1",
+  "kind": "Job",
+  "metadata": {
+    "name": "bench-a-ep8",
+    "namespace": "glm53-research"
+  },
+  "spec": {
+    "backoffLimit": 0,
+    "template": {
+      "metadata": {
+        "labels": {
+          "app": "research-client",
+          "profile": "cookbook-ep8-l1"
+        }
+      },
+      "spec": {
+        "restartPolicy": "Never",
+        "nodeSelector": {
+          "kubernetes.io/hostname": "glm53-h100-1"
+        },
+        "containers": [
+          {
+            "name": "client",
+            "image": "docker.io/glm53/sglang:0.5.20-cu130-b27fce60",
+            "imagePullPolicy": "Never",
+            "command": [
+              "python3",
+              "-u",
+              "/research/run-benchmarks.py",
+              "--base-url",
+              "http://aggregated-1:30000",
+              "--profile",
+              "cookbook-ep8-l1",
+              "--suite",
+              "A",
+              "--concurrency",
+              "8",
+              "32",
+              "--requests",
+              "100",
+              "--repetitions",
+              "1"
+            ],
+            "env": [
+              {
+                "name": "NVIDIA_VISIBLE_DEVICES",
+                "value": "void"
+              },
+              {
+                "name": "HF_HOME",
+                "value": "/cache/hf"
+              },
+              {
+                "name": "HF_HUB_OFFLINE",
+                "value": "1"
+              },
+              {
+                "name": "TRANSFORMERS_OFFLINE",
+                "value": "1"
+              },
+              {
+                "name": "OMP_NUM_THREADS",
+                "value": "4"
+              }
+            ],
+            "resources": {
+              "requests": {
+                "cpu": 4,
+                "memory": "16Gi"
+              },
+              "limits": {
+                "memory": "32Gi"
+              }
+            },
+            "volumeMounts": [
+              {
+                "name": "cache",
+                "mountPath": "/cache",
+                "readOnly": true
+              },
+              {
+                "name": "scripts",
+                "mountPath": "/research",
+                "readOnly": true
+              },
+              {
+                "name": "results",
+                "mountPath": "/benchmarks"
+              }
+            ]
+          }
+        ],
+        "volumes": [
+          {
+            "name": "cache",
+            "persistentVolumeClaim": {
+              "claimName": "model-1"
+            }
+          },
+          {
+            "name": "scripts",
+            "configMap": {
+              "name": "research-scripts"
+            }
+          },
+          {
+            "name": "results",
+            "hostPath": {
+              "path": "/root/glm53-research/benchmarks",
+              "type": "DirectoryOrCreate"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

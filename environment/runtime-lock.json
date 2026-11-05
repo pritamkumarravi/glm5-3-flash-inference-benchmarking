@@ -1,0 +1,40 @@
+{
+  "model": "zai-org/GLM-5.3-Flash",
+  "model_revision": "46a050bec13002ad29ee795c16e61cf4fa3c4a9c",
+  "base_image": "lmsysorg/sglang@sha256:b27fce60bc5494c118c4910702812bcfa8cee67abcdd1ff8b0902f21647552f4",
+  "base_image_platform": "linux/amd64",
+  "base_image_original_tag": "v0.5.20-cu130",
+  "base_image_sglang_commit": "94602c9c2b7cbdb8efd5c52802dac6a1c180089e",
+  "local_containerd_alias": "docker.io/glm53/sglang:0.5.20-cu130-b27fce60",
+  "local_containerd_archive_manifest": "sha256:1e55243baf90b99d99c9434386a8cc1e6f79720426b72e7174042fbe905d5a05",
+  "verified_container_versions": {
+    "sglang": "0.5.20",
+    "torch": "2.13.0+cu130",
+    "cuda": "13.0",
+    "nccl": "2.29.7",
+    "transformers": "5.12.1",
+    "tilelang": "0.1.12",
+    "sgl-deep-gemm": "0.2.0"
+  },
+  "kubernetes": "v1.34.12+k3s1",
+  "nvidia_device_plugin": "v0.18.2",
+  "rdma_shared_device_plugin": "v1.5.3",
+  "dynamo_candidate": "1.6.0",
+  "nixl_candidate": "1.5.0",
+  "dynamo_integration_validated": false,
+  "pd_validated": false,
+  "hicache_validated": false,
+  "container_gpu_validation_passed": true,
+  "real_weights_verified_on_nodes": [
+    0,
+    1
+  ],
+  "native_ep1_correctness_passed": true,
+  "native_ep8_correctness_passed": true,
+  "rdma_plugin_allocation_passed": false,
+  "rdma_plugin_allocation_error": "Provider does not expose optional MAD device /dev/infiniband/issm4 referenced by plugin",
+  "pod_bindmounted_verbs_open_passed_on_nodes": [
+    0,
+    1
+  ]
+}

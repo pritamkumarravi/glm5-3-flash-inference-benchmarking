@@ -1,0 +1,20 @@
+# Research cluster inside the rank-0 rental container only.
+data-dir: /root/glm53-research/k3s
+write-kubeconfig: /root/glm53-research/.secrets/kubeconfig.yaml
+write-kubeconfig-mode: '0600'
+token-file: /root/glm53-research/.secrets/cluster.token
+node-name: glm53-h100-0
+node-ip: 10.42.0.1
+advertise-address: 10.42.0.1
+https-listen-port: 16443
+tls-san: [10.42.0.1, 127.0.0.1]
+cluster-cidr: 10.54.0.0/16
+service-cidr: 10.55.0.0/16
+flannel-iface: wg0
+flannel-backend: vxlan
+disable: [traefik, servicelb, metrics-server]
+disable-network-policy: true
+default-runtime: nvidia
+kubelet-arg:
+  - root-dir=/root/glm53-research/kubelet
+  - max-pods=64

@@ -1,0 +1,62 @@
+46:    compute_mamba_state_slice_byte_blocks,
+57:        nixlBackendError,
+64:        nixlBackendError,
+76:# notices their peer is gone, which for UCX means waiting out peer keepalive.
+180:    @classmethod
+252:    @classmethod
+420:        is_mla_backend: Optional[bool] = False,
+422:        super().__init__(args, disaggregation_mode, server_args, is_mla_backend)
+445:        backend = envs.SGLANG_DISAGGREGATION_NIXL_BACKEND.get()
+447:        backend_params = json.loads(
+448:            envs.SGLANG_DISAGGREGATION_NIXL_BACKEND_PARAMS.get()
+450:        if not isinstance(backend_params, dict) or not all(
+452:            for key, value in backend_params.items()
+455:                "SGLANG_DISAGGREGATION_NIXL_BACKEND_PARAMS must be a JSON object "
+461:            backends=[],
+468:            # nixl_agent_config to explicitly-created backends.
+469:            if backend == "UCX" or backend == "OBJ":
+470:                backend_params.setdefault("num_threads", str(num_threads))
+471:            elif backend == "GDS_MT":
+472:                backend_params.setdefault("thread_count", str(num_threads))
+473:            elif backend == "UCCL":
+474:                backend_params.setdefault("num_cpus", str(num_threads))
+476:            lambda: self.agent.create_backend(backend, backend_params),
+478:            what=f"NIXL create_backend({backend!r}, {backend_params})",
+482:        if backend not in available_plugins:
+484:                f"NIXL backend '{backend}' not found. Available: {available_plugins}. "
+487:        logger.info(f"NIXL KVManager initialized with backend: {backend}")
+586:        descs = self.agent.register_memory(addrs, "VRAM")
+866:            # replication, not modulo) that the mooncake backend already relies
+867:            # on, so the two backends stay in sync.
+1062:            self.is_mla_backend
+1063:            or self.is_hybrid_mla_backend
+1269:                            and not self.is_mla_backend
+1270:                            and not self.is_hybrid_mla_backend
+1332:                                self.is_mla_backend
+1333:                                or self.is_hybrid_mla_backend
+1509:            kv_descs = self.agent.register_memory(kv_addrs, mem_kind)
+1523:        self.aux_descs = self.agent.register_memory(aux_addrs, "DRAM")
+1540:            self.state_descs = self.agent.register_memory(state_addrs, "VRAM")
+1585:        even on a non-MLA backend, for K-only state buffers (e.g. MiniMax sparse
+1640:        if self.is_mla_backend or force_flat:
+2286:    def _send_mamba_state(
+2299:        """Transfer Mamba states via RDMA."""
+2300:        assert len(prefill_state_indices) == 1, "Mamba should have single state index"
+2336:            raise Exception("Failed to create Mamba state transfer")
+2339:            raise Exception("Failed to post Mamba state transfer")
+2342:    def _send_mamba_state_slice(
+2362:        """Transfer Mamba states with TP slice support via RDMA.
+2366:        accordingly, mirroring Mooncake's _send_mamba_state_slice. GDN
+2370:        compute_mamba_state_slice_byte_blocks).
+2373:            "Using Mamba state slice transfer for different TP sizes. "
+2377:        assert len(prefill_state_indices) == 1, "Mamba should have single state index"
+2380:            return self._send_mamba_state(
+2430:            ) in compute_mamba_state_slice_byte_blocks(
+2466:            raise Exception("Failed to create Mamba state slice transfer")
+2469:            raise Exception("Failed to post Mamba state slice transfer")
+2538:            if st == StateType.MAMBA:
+2542:                            "Replicated Mamba PD state transfer currently requires "
+2545:                    h = self._send_mamba_state_slice(
+2565:                    h = self._send_mamba_state(
+2614:                if not self.is_mla_backend and self.attn_tp_size != decode_tp_size:
+3160:        # backends track completion through prefill_response_tracker, which

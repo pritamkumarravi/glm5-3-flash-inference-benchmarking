@@ -1,0 +1,102 @@
+[
+  {
+    "profile": "fpm-ep1-l1",
+    "suite": "A",
+    "concurrency": 16,
+    "repetition": 0,
+    "artifact": "benchmarks/exported/node0/raw/fpm-ep1-l1/20261104T092509.273043Z-A-i4096-o1024-c16-prefix0.0-rep0",
+    "exit_code": 1,
+    "completed": null,
+    "output_gate": null
+  },
+  {
+    "profile": "fpm-ep1-l1",
+    "suite": "A",
+    "concurrency": 32,
+    "repetition": 0,
+    "artifact": "benchmarks/exported/node0/raw/fpm-ep1-l1/20261104T092537.353526Z-A-i4096-o1024-c32-prefix0.0-rep0",
+    "exit_code": 1,
+    "completed": null,
+    "output_gate": null
+  },
+  {
+    "profile": "fpm-ep1-l1",
+    "suite": "A",
+    "concurrency": 4,
+    "repetition": 0,
+    "artifact": "benchmarks/exported/node0/raw/fpm-ep1-l1/20261104T092551.629195Z-A-i4096-o1024-c4-prefix0.0-rep0",
+    "exit_code": 1,
+    "completed": null,
+    "output_gate": null
+  },
+  {
+    "profile": "fpm-ep1-l1",
+    "suite": "A",
+    "concurrency": 1,
+    "repetition": 0,
+    "artifact": "benchmarks/exported/node0/raw/fpm-ep1-l1/20261104T092605.450223Z-A-i4096-o1024-c1-prefix0.0-rep0",
+    "exit_code": 1,
+    "completed": null,
+    "output_gate": null
+  },
+  {
+    "profile": "fpm-ep1-l1",
+    "suite": "A",
+    "concurrency": 16,
+    "repetition": 0,
+    "artifact": "benchmarks/exported/node0/raw/fpm-ep1-l1/20261104T092906.467691Z-A-i4096-o1024-c16-prefix0.0-rep0",
+    "exit_code": 1,
+    "completed": null,
+    "output_gate": null
+  },
+  {
+    "profile": "cookbook-ep8-l1",
+    "suite": "A",
+    "concurrency": 8,
+    "repetition": 0,
+    "artifact": "benchmarks/exported/node1/raw/cookbook-ep8-l1/20261104T091352.912109Z-A-i4096-o1024-c8-prefix0.0-rep0",
+    "exit_code": 1,
+    "completed": null,
+    "output_gate": null
+  },
+  {
+    "profile": "cookbook-ep8-l1",
+    "suite": "A",
+    "concurrency": 32,
+    "repetition": 0,
+    "artifact": "benchmarks/exported/node1/raw/cookbook-ep8-l1/20261104T091421.788791Z-A-i4096-o1024-c32-prefix0.0-rep0",
+    "exit_code": 1,
+    "completed": null,
+    "output_gate": null
+  },
+  {
+    "profile": "cookbook-ep8-l1",
+    "suite": "A",
+    "concurrency": 8,
+    "repetition": 0,
+    "artifact": "benchmarks/exported/node1/raw/cookbook-ep8-l1/20261104T092043.363005Z-A-i4096-o1024-c8-prefix0.0-rep0",
+    "exit_code": 1,
+    "completed": null,
+    "output_gate": null
+  },
+  {
+    "profile": "cookbook-ep8-l1",
+    "suite": "A",
+    "concurrency": 32,
+    "repetition": 0,
+    "artifact": "benchmarks/exported/node1/raw/cookbook-ep8-l1/20261104T092142.066161Z-A-i4096-o1024-c32-prefix0.0-rep0",
+    "exit_code": 1,
+    "completed": null,
+    "output_gate": null
+  },
+  {
+    "profile": "dynamo-ep1-l1",
+    "suite": "D",
+    "concurrency": 8,
+    "repetition": 0,
+    "artifact": "benchmarks/exported/node1/raw/dynamo-ep1-l1/20261104T094348.473217Z-D-i32768-o128-c8-prefix0.75-rep0",
+    "exit_code": 1,
+    "completed": null,
+    "output_gate": null
+  }
+]

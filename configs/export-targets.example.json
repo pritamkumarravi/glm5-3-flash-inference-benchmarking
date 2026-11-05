@@ -1,0 +1,6 @@
+{
+  "nodes": [
+    {"name": "node0", "host": "RENTAL_PUBLIC_HOST", "port": 22, "known_hosts": "/path/to/local/known_hosts/node0"},
+    {"name": "node1", "host": "RENTAL_PUBLIC_HOST", "port": 22, "known_hosts": "/path/to/local/known_hosts/node1"}
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "backend": "nixl",
+  "model_revision": "46a050bec13002ad29ee795c16e61cf4fa3c4a9c",
+  "tp_prefill": 8,
+  "tp_decode": 8,
+  "cp": 1,
+  "speculative": false,
+  "hicache": true,
+  "validated": false,
+  "allocated_gpus": 16,
+  "hicache_role": "prefill",
+  "hicache_gib_per_rank": 64,
+  "write_policy": "write_through",
+  "baseline_manifest": "kubernetes/pd-nixl.json",
+  "measured": false,
+  "status": "startup-failed",
+  "error": "NIXL create_backend('UCX', {'num_threads': '8'}) did not return within 60s",
+  "network_context": "Node1 became NotReady/SSH inaccessible; node0 later also SSH inaccessible. Cause of backend timeout versus fabric outage not established."
+}

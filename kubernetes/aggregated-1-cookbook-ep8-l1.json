@@ -1,0 +1,196 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "aggregated-1",
+        "namespace": "glm53-research"
+      },
+      "spec": {
+        "replicas": 1,
+        "strategy": {
+          "type": "Recreate"
+        },
+        "selector": {
+          "matchLabels": {
+            "app": "aggregated-1"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "aggregated-1",
+              "profile": "cookbook-ep8-l1"
+            },
+            "annotations": {
+              "research.model-revision": "46a050bec13002ad29ee795c16e61cf4fa3c4a9c",
+              "research.validation": "pending real-weight checks"
+            }
+          },
+          "spec": {
+            "runtimeClassName": "nvidia",
+            "nodeSelector": {
+              "kubernetes.io/hostname": "glm53-h100-1"
+            },
+            "terminationGracePeriodSeconds": 90,
+            "containers": [
+              {
+                "name": "worker",
+                "image": "docker.io/glm53/sglang:0.5.20-cu130-b27fce60",
+                "imagePullPolicy": "Never",
+                "command": [
+                  "bash",
+                  "-lc",
+                  "set -euo pipefail; test -f /cache/download-manifest.json; python3 -m sglang.launch_server --model-path /cache/checkpoint --served-model-name zai-org/GLM-5.3-Flash --tp-size 8 --ep-size 8 --quantization fp8 --kv-cache-dtype bfloat16 --dsa-prefill-backend tilelang --dsa-decode-backend tilelang --moe-runner-backend deep_gemm --reasoning-parser auto --tool-call-parser auto --context-length 1048576 --mem-fraction-static 0.75 --max-running-requests 32 --chunked-prefill-size 8192 --max-prefill-tokens 8192 --mamba-full-memory-ratio 0.9 --enable-metrics --watchdog-timeout 1200 --host 0.0.0.0 --port 30000 2>&1 | tee /logs/cookbook-ep8-l1-${HOSTNAME}.log"
+                ],
+                "env": [
+                  {
+                    "name": "HF_HOME",
+                    "value": "/cache/hf"
+                  },
+                  {
+                    "name": "HF_HUB_OFFLINE",
+                    "value": "1"
+                  },
+                  {
+                    "name": "TRANSFORMERS_OFFLINE",
+                    "value": "1"
+                  },
+                  {
+                    "name": "OMP_NUM_THREADS",
+                    "value": "8"
+                  },
+                  {
+                    "name": "NCCL_DEBUG",
+                    "value": "INFO"
+                  },
+                  {
+                    "name": "DYN_NAMESPACE",
+                    "value": "glm53"
+                  },
+                  {
+                    "name": "ETCD_ENDPOINTS",
+                    "value": "http://etcd:2379"
+                  },
+                  {
+                    "name": "NATS_SERVER",
+                    "value": "nats://nats:4222"
+                  }
+                ],
+                "ports": [
+                  {
+                    "containerPort": 30000,
+                    "name": "http"
+                  },
+                  {
+                    "containerPort": 8081,
+                    "name": "metrics"
+                  }
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": 32,
+                    "memory": "800Gi",
+                    "nvidia.com/gpu": 8
+                  },
+                  "limits": {
+                    "memory": "1100Gi",
+                    "nvidia.com/gpu": 8
+                  }
+                },
+                "securityContext": {
+                  "capabilities": {
+                    "add": [
+                      "IPC_LOCK",
+                      "SYS_RESOURCE"
+                    ]
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "cache",
+                    "mountPath": "/cache"
+                  },
+                  {
+                    "name": "shm",
+                    "mountPath": "/dev/shm"
+                  },
+                  {
+                    "name": "logs",
+                    "mountPath": "/logs"
+                  }
+                ],
+                "startupProbe": {
+                  "httpGet": {
+                    "path": "/health",
+                    "port": "http"
+                  },
+                  "failureThreshold": 180,
+                  "periodSeconds": 10
+                },
+                "readinessProbe": {
+                  "httpGet": {
+                    "path": "/health",
+                    "port": "http"
+                  },
+                  "periodSeconds": 10,
+                  "timeoutSeconds": 5
+                }
+              }
+            ],
+            "volumes": [
+              {
+                "name": "cache",
+                "persistentVolumeClaim": {
+                  "claimName": "model-1"
+                }
+              },
+              {
+                "name": "shm",
+                "emptyDir": {
+                  "medium": "Memory",
+                  "sizeLimit": "128Gi"
+                }
+              },
+              {
+                "name": "logs",
+                "hostPath": {
+                  "path": "/root/glm53-research/logs/sglang",
+                  "type": "DirectoryOrCreate"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "aggregated-1",
+        "namespace": "glm53-research"
+      },
+      "spec": {
+        "selector": {
+          "app": "aggregated-1"
+        },
+        "ports": [
+          {
+            "name": "http",
+            "port": 30000,
+            "targetPort": "http"
+          },
+          {
+            "name": "metrics",
+            "port": 8081,
+            "targetPort": "metrics"
+          }
+        ]
+      }
+    }
+  ]
+}

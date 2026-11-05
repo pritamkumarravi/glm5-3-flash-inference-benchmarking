@@ -1,0 +1,188 @@
+[
+  {
+    "profile": "dynamo-ep1-host32",
+    "suite": "D",
+    "c": 8,
+    "output_tps": 80.1,
+    "mean_ttft_ms": 6448.06,
+    "cache": {
+      "input_tokens": 3544609.0,
+      "device_hit_tokens": 576640.0,
+      "host_hit_tokens": 518336.0,
+      "storage_hit_tokens": 0.0,
+      "hicache_dropped_tokens_total_kv_host_pressure": 0.0,
+      "hicache_dropped_tokens_total_kv_write_through_unbacked_eviction": 613376.0,
+      "hicache_backup_tokens_total_kv_": 26649600.0,
+      "hicache_backup_tokens_total_mamba_": 4520.0,
+      "hicache_backup_bytes_total": 383586304000.0
+    },
+    "telemetry": {
+      "samples": 90,
+      "gpu_mean_util_percent": 73.04583333333333,
+      "gpu_mean_memory_util_percent": 36.891666666666666,
+      "gpu_mean_vram_mib": 62259.930555555555,
+      "gpu_peak_vram_mib": 62334.0,
+      "gpu_mean_power_w": 403.25405555555557,
+      "gpu_peak_temperature_c": 58.0,
+      "max_node_cgroup_gib": 768.5949745178223
+    }
+  },
+  {
+    "profile": "fpm-ep1-l1",
+    "suite": "A",
+    "c": 8,
+    "output_tps": 529.24,
+    "mean_ttft_ms": 1323.44,
+    "cache": {
+      "input_tokens": 445616.0,
+      "device_hit_tokens": 22080.0,
+      "host_hit_tokens": 0.0,
+      "storage_hit_tokens": 0.0
+    },
+    "telemetry": null
+  },
+  {
+    "profile": "fpm-ep1-l1",
+    "suite": "A",
+    "c": 32,
+    "output_tps": 734.33,
+    "mean_ttft_ms": 8737.79,
+    "cache": {
+      "input_tokens": 445633.0,
+      "device_hit_tokens": 22080.0,
+      "host_hit_tokens": 0.0,
+      "storage_hit_tokens": 0.0
+    },
+    "telemetry": null
+  },
+  {
+    "profile": "fpm-ep1-l1",
+    "suite": "A",
+    "c": 4,
+    "output_tps": 345.71,
+    "mean_ttft_ms": 785.71,
+    "cache": {
+      "input_tokens": 432247.0,
+      "device_hit_tokens": 17664.0,
+      "host_hit_tokens": 0.0,
+      "storage_hit_tokens": 0.0
+    },
+    "telemetry": null
+  },
+  {
+    "profile": "cookbook-ep8-l1",
+    "suite": "A",
+    "c": 8,
+    "output_tps": 601.93,
+    "mean_ttft_ms": 1324.11,
+    "cache": {
+      "input_tokens": 432367.0,
+      "device_hit_tokens": 35328.0,
+      "host_hit_tokens": 0.0,
+      "storage_hit_tokens": 0.0
+    },
+    "telemetry": null
+  },
+  {
+    "profile": "cookbook-ep8-l1",
+    "suite": "A",
+    "c": 32,
+    "output_tps": 1126.24,
+    "mean_ttft_ms": 4124.54,
+    "cache": {
+      "input_tokens": 432365.0,
+      "device_hit_tokens": 35328.0,
+      "host_hit_tokens": 0.0,
+      "storage_hit_tokens": 0.0
+    },
+    "telemetry": null
+  },
+  {
+    "profile": "dynamo-ep1-host64",
+    "suite": "D",
+    "c": 8,
+    "output_tps": 102.51,
+    "mean_ttft_ms": 5243.81,
+    "cache": {
+      "input_tokens": 3042529.0,
+      "device_hit_tokens": 562752.0,
+      "host_hit_tokens": 1034304.0,
+      "storage_hit_tokens": 0.0,
+      "hicache_dropped_tokens_total_kv_host_pressure": 0.0,
+      "hicache_dropped_tokens_total_kv_write_through_unbacked_eviction": 272384.0,
+      "hicache_backup_tokens_total_kv_": 22042112.0,
+      "hicache_backup_tokens_total_mamba_": 4072.0,
+      "hicache_backup_bytes_total": 323420848128.0
+    },
+    "telemetry": {
+      "samples": 71,
+      "gpu_mean_util_percent": 84.69014084507042,
+      "gpu_mean_memory_util_percent": 42.17429577464789,
+      "gpu_mean_vram_mib": 62324.55985915493,
+      "gpu_peak_vram_mib": 62398.0,
+      "gpu_mean_power_w": 435.55929577464786,
+      "gpu_peak_temperature_c": 59.0,
+      "max_node_cgroup_gib": 999.2705764770508
+    }
+  },
+  {
+    "profile": "dynamo-ep1-l1",
+    "suite": "D",
+    "c": 8,
+    "output_tps": 72.94,
+    "mean_ttft_ms": 7188.41,
+    "cache": {
+      "input_tokens": 4064417.0,
+      "device_hit_tokens": 575168.0,
+      "host_hit_tokens": 0.0,
+      "storage_hit_tokens": 0.0
+    },
+    "telemetry": {
+      "samples": 100,
+      "gpu_mean_util_percent": 74.55625,
+      "gpu_mean_memory_util_percent": 38.11,
+      "gpu_mean_vram_mib": 62154.34,
+      "gpu_peak_vram_mib": 62228.0,
+      "gpu_mean_power_w": 414.42005,
+      "gpu_peak_temperature_c": 61.0,
+      "max_node_cgroup_gib": 522.9317855834961
+    }
+  },
+  {
+    "profile": "pd-nixl",
+    "suite": "D",
+    "c": 8,
+    "output_tps": 104.45,
+    "mean_ttft_ms": 8498.12,
+    "cache": {
+      "input_tokens": 4035873.0,
+      "device_hit_tokens": 603712.0,
+      "host_hit_tokens": 0.0,
+      "storage_hit_tokens": 0.0
+    },
+    "telemetry": null
+  },
+  {
+    "profile": "pd-nixl",
+    "suite": "D",
+    "c": 32,
+    "output_tps": 104.28,
+    "mean_ttft_ms": 33627.8,
+    "cache": {
+      "input_tokens": 4035105.0,
+      "device_hit_tokens": 604480.0,
+      "host_hit_tokens": 0.0,
+      "storage_hit_tokens": 0.0
+    },
+    "telemetry": {
+      "samples": 133,
+      "gpu_mean_util_percent": 84.45394736842105,
+      "gpu_mean_memory_util_percent": 31.2546992481203,
+      "gpu_mean_vram_mib": 65045.15977443609,
+      "gpu_peak_vram_mib": 65453.0,
+      "gpu_mean_power_w": 362.6676597744361,
+      "gpu_peak_temperature_c": 61.0,
+      "max_node_cgroup_gib": 552.751277923584
+    }
+  }
+]

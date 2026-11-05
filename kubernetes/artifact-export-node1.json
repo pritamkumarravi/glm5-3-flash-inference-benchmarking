@@ -1,0 +1,56 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "name": "artifact-export-node1",
+    "namespace": "glm53-research"
+  },
+  "spec": {
+    "nodeSelector": {
+      "kubernetes.io/hostname": "glm53-h100-1"
+    },
+    "restartPolicy": "Never",
+    "containers": [
+      {
+        "name": "export",
+        "image": "docker.io/glm53/sglang:0.5.20-cu130-b27fce60",
+        "imagePullPolicy": "Never",
+        "command": [
+          "sleep",
+          "600"
+        ],
+        "env": [
+          {
+            "name": "NVIDIA_VISIBLE_DEVICES",
+            "value": "void"
+          }
+        ],
+        "resources": {
+          "requests": {
+            "cpu": "100m",
+            "memory": "128Mi"
+          },
+          "limits": {
+            "memory": "1Gi"
+          }
+        },
+        "volumeMounts": [
+          {
+            "name": "research",
+            "mountPath": "/research-output",
+            "readOnly": true
+          }
+        ]
+      }
+    ],
+    "volumes": [
+      {
+        "name": "research",
+        "hostPath": {
+          "path": "/root/glm53-research",
+          "type": "Directory"
+        }
+      }
+    ]
+  }
+}

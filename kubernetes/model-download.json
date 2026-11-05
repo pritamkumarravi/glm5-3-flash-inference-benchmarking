@@ -1,0 +1,196 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "batch/v1",
+      "kind": "Job",
+      "metadata": {
+        "name": "model-download-0",
+        "namespace": "glm53-research"
+      },
+      "spec": {
+        "backoffLimit": 1,
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "model-download"
+            }
+          },
+          "spec": {
+            "restartPolicy": "Never",
+            "nodeSelector": {
+              "kubernetes.io/hostname": "glm53-h100-0"
+            },
+            "containers": [
+              {
+                "name": "download",
+                "image": "docker.io/glm53/sglang:0.5.20-cu130-b27fce60",
+                "imagePullPolicy": "Never",
+                "command": [
+                  "bash",
+                  "-lc",
+                  "set -o pipefail; python3 -u /research/download-model.py 2>&1 | tee /logs/model-download.log"
+                ],
+                "env": [
+                  {
+                    "name": "HF_HOME",
+                    "value": "/cache/hf"
+                  },
+                  {
+                    "name": "HF_XET_HIGH_PERFORMANCE",
+                    "value": "1"
+                  },
+                  {
+                    "name": "NVIDIA_VISIBLE_DEVICES",
+                    "value": "void"
+                  }
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": 8,
+                    "memory": "32Gi"
+                  },
+                  "limits": {
+                    "memory": "64Gi"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "cache",
+                    "mountPath": "/cache"
+                  },
+                  {
+                    "name": "scripts",
+                    "mountPath": "/research",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "logs",
+                    "mountPath": "/logs"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "cache",
+                "persistentVolumeClaim": {
+                  "claimName": "model-0"
+                }
+              },
+              {
+                "name": "scripts",
+                "configMap": {
+                  "name": "research-scripts-e048b96a8df50253"
+                }
+              },
+              {
+                "name": "logs",
+                "hostPath": {
+                  "path": "/root/glm53-research/logs/infrastructure",
+                  "type": "DirectoryOrCreate"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "batch/v1",
+      "kind": "Job",
+      "metadata": {
+        "name": "model-download-1",
+        "namespace": "glm53-research"
+      },
+      "spec": {
+        "backoffLimit": 1,
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "model-download"
+            }
+          },
+          "spec": {
+            "restartPolicy": "Never",
+            "nodeSelector": {
+              "kubernetes.io/hostname": "glm53-h100-1"
+            },
+            "containers": [
+              {
+                "name": "download",
+                "image": "docker.io/glm53/sglang:0.5.20-cu130-b27fce60",
+                "imagePullPolicy": "Never",
+                "command": [
+                  "bash",
+                  "-lc",
+                  "set -o pipefail; python3 -u /research/download-model.py 2>&1 | tee /logs/model-download.log"
+                ],
+                "env": [
+                  {
+                    "name": "HF_HOME",
+                    "value": "/cache/hf"
+                  },
+                  {
+                    "name": "HF_XET_HIGH_PERFORMANCE",
+                    "value": "1"
+                  },
+                  {
+                    "name": "NVIDIA_VISIBLE_DEVICES",
+                    "value": "void"
+                  }
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": 8,
+                    "memory": "32Gi"
+                  },
+                  "limits": {
+                    "memory": "64Gi"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "cache",
+                    "mountPath": "/cache"
+                  },
+                  {
+                    "name": "scripts",
+                    "mountPath": "/research",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "logs",
+                    "mountPath": "/logs"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "cache",
+                "persistentVolumeClaim": {
+                  "claimName": "model-1"
+                }
+              },
+              {
+                "name": "scripts",
+                "configMap": {
+                  "name": "research-scripts-e048b96a8df50253"
+                }
+              },
+              {
+                "name": "logs",
+                "hostPath": {
+                  "path": "/root/glm53-research/logs/infrastructure",
+                  "type": "DirectoryOrCreate"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

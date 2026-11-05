@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dynamo-frontend
+  namespace: glm53-research
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: dynamo-frontend}
+  template:
+    metadata:
+      labels: {app: dynamo-frontend}
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: glm53-h100-0
+      containers:
+        - name: frontend
+          image: docker.io/glm53/sglang-dynamo:0.5.20-1.6.0
+          imagePullPolicy: Never
+          command: [python3, -m, dynamo.frontend]
+          args: [--http-host, 0.0.0.0, --http-port, '8000']
+          env:
+            - {name: NVIDIA_VISIBLE_DEVICES, value: void}
+            - {name: DYN_NAMESPACE, value: glm53}
+            - {name: DYN_DISCOVERY_BACKEND, value: etcd}
+            - {name: ETCD_ENDPOINTS, value: 'http://etcd:2379'}
+            - {name: DYN_EVENT_PLANE, value: zmq}
+            - {name: DYN_REQUEST_PLANE, value: tcp}
+            - {name: DYN_RESPONSE_PLANE, value: tcp}
+            - {name: DYN_ROUTER_MODE, value: kv}
+            - {name: DYN_ROUTER_BLOCK_SIZE, value: '64'}
+            - {name: TOKIO_WORKER_THREADS, value: '8'}
+            - {name: HF_HOME, value: /cache/hf}
+            - {name: HF_HUB_OFFLINE, value: '1'}
+          ports:
+            - {name: http, containerPort: 8000}
+          resources:
+            requests: {cpu: '4', memory: 8Gi}
+            limits: {memory: 16Gi}
+          readinessProbe:
+            httpGet: {path: /health, port: http}
+            periodSeconds: 5
+          volumeMounts:
+            - {name: logs, mountPath: /research-logs}
+            - {name: model-metadata, mountPath: /cache, readOnly: true}
+      volumes:
+        - name: model-metadata
+          persistentVolumeClaim:
+            claimName: model-0
+        - name: logs
+          hostPath:
+            path: /root/glm53-research/logs/dynamo
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dynamo-frontend
+  namespace: glm53-research
+spec:
+  selector: {app: dynamo-frontend}
+  ports:
+    - {name: http, port: 8000, targetPort: http}

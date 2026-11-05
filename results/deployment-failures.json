@@ -1,0 +1,12 @@
+[
+  {
+    "timestamp": "2026-11-04T10:27:53.847178Z",
+    "configuration": "kubernetes/pd-nixl-host64.json",
+    "model_revision": "46a050bec13002ad29ee795c16e61cf4fa3c4a9c",
+    "runtime": "SGLang0.5.20 Dynamo1.6.0 NIXL1.5.0",
+    "outcome": "startup failed; no correctness or benchmark pass",
+    "error": "NIXL create_backend('UCX', {'num_threads': '8'}) did not return within 60s",
+    "artifact": "logs/prefill/nixl-host64-failed-previous.log",
+    "interpretation": "Node1 became NotReady/SSH inaccessible; node0 later also SSH inaccessible. Cause of backend timeout versus fabric outage not established."
+  }
+]

@@ -1,0 +1,131 @@
+{
+  "apiVersion": "batch/v1",
+  "kind": "Job",
+  "metadata": {
+    "name": "bench-a-ep1-sse-fixed",
+    "namespace": "glm53-research"
+  },
+  "spec": {
+    "backoffLimit": 0,
+    "template": {
+      "metadata": {
+        "labels": {
+          "app": "research-client",
+          "profile": "fpm-ep1-l1"
+        }
+      },
+      "spec": {
+        "restartPolicy": "Never",
+        "nodeSelector": {
+          "kubernetes.io/hostname": "glm53-h100-0"
+        },
+        "containers": [
+          {
+            "name": "client",
+            "image": "docker.io/glm53/sglang:0.5.20-cu130-b27fce60",
+            "imagePullPolicy": "Never",
+            "command": [
+              "python3",
+              "-u",
+              "/research/run-benchmarks.py",
+              "--base-url",
+              "http://aggregated-0:30000",
+              "--profile",
+              "fpm-ep1-l1",
+              "--suite",
+              "A",
+              "--concurrency",
+              "16",
+              "32",
+              "4",
+              "1",
+              "--requests",
+              "100",
+              "--repetitions",
+              "1",
+              "--cache-input-len",
+              "4096",
+              "--cache-output-len",
+              "1024",
+              "--prefix-groups",
+              "4",
+              "--prefix-fractions",
+              "0.0",
+              "0.25",
+              "0.5",
+              "0.75"
+            ],
+            "env": [
+              {
+                "name": "NVIDIA_VISIBLE_DEVICES",
+                "value": "void"
+              },
+              {
+                "name": "HF_HOME",
+                "value": "/cache/hf"
+              },
+              {
+                "name": "HF_HUB_OFFLINE",
+                "value": "1"
+              },
+              {
+                "name": "TRANSFORMERS_OFFLINE",
+                "value": "1"
+              },
+              {
+                "name": "OMP_NUM_THREADS",
+                "value": "4"
+              }
+            ],
+            "resources": {
+              "requests": {
+                "cpu": 4,
+                "memory": "16Gi"
+              },
+              "limits": {
+                "memory": "32Gi"
+              }
+            },
+            "volumeMounts": [
+              {
+                "name": "cache",
+                "mountPath": "/cache",
+                "readOnly": true
+              },
+              {
+                "name": "scripts",
+                "mountPath": "/research",
+                "readOnly": true
+              },
+              {
+                "name": "results",
+                "mountPath": "/benchmarks"
+              }
+            ]
+          }
+        ],
+        "volumes": [
+          {
+            "name": "cache",
+            "persistentVolumeClaim": {
+              "claimName": "model-0"
+            }
+          },
+          {
+            "name": "scripts",
+            "configMap": {
+              "name": "research-scripts-3ec6c5e7ccf38520"
+            }
+          },
+          {
+            "name": "results",
+            "hostPath": {
+              "path": "/root/glm53-research/benchmarks",
+              "type": "DirectoryOrCreate"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

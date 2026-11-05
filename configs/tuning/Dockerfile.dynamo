@@ -1,0 +1,6 @@
+FROM lmsysorg/sglang@sha256:b27fce60bc5494c118c4910702812bcfa8cee67abcdd1ff8b0902f21647552f4
+COPY runtime-constraints.txt /opt/research/runtime-constraints.txt
+RUN python3 -m pip install --no-cache-dir --constraint /opt/research/runtime-constraints.txt ai-dynamo==1.6.0 'nixl[cu13]==1.5.0' blake3==1.0.8
+RUN python3 -m pip freeze > /opt/research/runtime-freeze.txt
+RUN python3 -c 'import importlib.metadata as m; assert m.version("sglang")=="0.5.20"; import dynamo.sglang; print("Dynamo SGLang import passed")'
+LABEL research.sglang.version="0.5.20" research.dynamo.version="1.6.0" research.base.amd64-manifest="sha256:b27fce60bc5494c118c4910702812bcfa8cee67abcdd1ff8b0902f21647552f4"

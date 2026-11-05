@@ -1,0 +1,10 @@
+data-dir: /root/glm53-research/k3s
+server: https://10.42.0.1:16443
+token-file: /root/glm53-research/.secrets/cluster.token
+node-name: glm53-h100-1
+node-ip: 10.42.0.2
+flannel-iface: wg0
+default-runtime: nvidia
+kubelet-arg:
+  - root-dir=/root/glm53-research/kubelet
+  - max-pods=64

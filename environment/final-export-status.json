@@ -1,0 +1,51 @@
+{
+  "node0": {
+    "logs": {
+      "timestamp": "2026-11-04T10:29:19.796523+00:00",
+      "node": "node0",
+      "folder": "logs",
+      "exit_code": 0,
+      "error": ""
+    },
+    "benchmarks": {
+      "timestamp": "2026-11-04T10:29:26.244041+00:00",
+      "node": "node0",
+      "folder": "benchmarks",
+      "exit_code": 0,
+      "error": ""
+    },
+    "configs": {
+      "timestamp": "2026-11-04T10:29:32.913821+00:00",
+      "node": "node0",
+      "folder": "configs",
+      "exit_code": 0,
+      "error": ""
+    }
+  },
+  "node1": {
+    "logs": {
+      "timestamp": "2026-11-04T10:21:43.673732+00:00",
+      "node": "node1",
+      "folder": "logs",
+      "exit_code": 0,
+      "error": ""
+    },
+    "benchmarks": {
+      "timestamp": "2026-11-04T10:21:50.299373+00:00",
+      "node": "node1",
+      "folder": "benchmarks",
+      "exit_code": 0,
+      "error": ""
+    },
+    "configs": {
+      "timestamp": "2026-11-04T10:21:56.789402+00:00",
+      "node": "node1",
+      "folder": "configs",
+      "exit_code": 0,
+      "error": ""
+    }
+  },
+  "timestamp": "2026-11-04T10:31:58.611066+00:00",
+  "pd_hicache_failure": "NIXL create_backend('UCX', {'num_threads': '8'}) did not return within 60s; prefill startup failed. Node1 became NotReady and SSH exports failed; later node0 SSH also timed out. Causality is not established.",
+  "pd_hicache_validation": "Not completed; no PD+HiCache benchmark accepted; 64K/c128 run not started."
+}

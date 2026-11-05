@@ -1,0 +1,60 @@
+{
+  "selection_scope": "Best observed among accepted exploratory cases; not universal optima",
+  "choices": {
+    "aggregated_standard_throughput": {
+      "profile": "cookbook-ep8-l1",
+      "artifact": "benchmarks/exported/node1/raw/cookbook-ep8-l1/20261104T092909.794065Z-A-i4096-o1024-c32-prefix0.0-rep0",
+      "allocated_gpus": 8,
+      "concurrency": 32,
+      "input_target": 4096,
+      "output_target": 1024,
+      "output_throughput": 1126.2382262975811,
+      "mean_ttft_ms": 4124.543806489819,
+      "mean_tpot_ms": 17.920841658485
+    },
+    "aggregated_standard_latency": {
+      "profile": "fpm-ep1-l1",
+      "artifact": "benchmarks/exported/node0/raw/fpm-ep1-l1/20261104T093715.187379Z-A-i4096-o1024-c4-prefix0.0-rep0",
+      "allocated_gpus": 8,
+      "concurrency": 4,
+      "input_target": 4096,
+      "output_target": 1024,
+      "output_throughput": 345.7064621261516,
+      "mean_ttft_ms": 785.7050629802325,
+      "mean_tpot_ms": 10.811909067096371
+    },
+    "aggregated_hicache_at_c8": {
+      "profile": "dynamo-ep1-host64",
+      "artifact": "benchmarks/exported/node1/raw/dynamo-ep1-host64/20261104T095940.668239Z-D-i32768-o128-c8-prefix0.75-rep0",
+      "allocated_gpus": 8,
+      "concurrency": 8,
+      "input_target": 32768,
+      "output_target": 128,
+      "output_throughput": 102.50696249040027,
+      "mean_ttft_ms": 5243.811334828166,
+      "mean_tpot_ms": 37.336957188361744
+    },
+    "pd_at_c8": {
+      "profile": "pd-nixl",
+      "artifact": "benchmarks/exported/node1/raw/pd-nixl/20261104T101136.508635Z-D-i32768-o128-c8-prefix0.75-rep0",
+      "allocated_gpus": 16,
+      "concurrency": 8,
+      "input_target": 32768,
+      "output_target": 128,
+      "output_throughput": 104.45203778438118,
+      "mean_ttft_ms": 8498.124367750108,
+      "mean_tpot_ms": 8.312341740524452
+    },
+    "pd_at_c32": {
+      "profile": "pd-nixl",
+      "artifact": "benchmarks/exported/node1/raw/pd-nixl/20261104T101537.254098Z-D-i32768-o128-c32-prefix0.75-rep0",
+      "allocated_gpus": 16,
+      "concurrency": 32,
+      "input_target": 32768,
+      "output_target": 128,
+      "output_throughput": 104.28298687286107,
+      "mean_ttft_ms": 33627.804619031085,
+      "mean_tpot_ms": 8.304447980931203
+    }
+  }
+}
